@@ -5,6 +5,8 @@ import (
 	"etcd-tester/clog"
 	"time"
 
+	"math/rand/v2"
+
 	"github.com/google/uuid"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.etcd.io/etcd/client/v3/concurrency"
@@ -22,6 +24,7 @@ func NewClient(ctx context.Context, id string, topics, endpoints []string) Clien
 		ctx:       ctx,
 		topics:    topics,
 		endpoints: endpoints,
+		rng:       rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), uint64(uuid.New().ID()))),
 	}
 }
 
@@ -32,6 +35,7 @@ type client struct {
 	topics    []string
 	endpoints []string
 	c         *clientv3.Client
+	rng       *rand.Rand
 }
 
 func (c *client) Start() error {
@@ -113,7 +117,10 @@ func (c *client) contest(topic string) {
 	}
 	// Yay!! we won the election
 	log.Sugar().Infof("won election for topic %s", topic)
-	time.Sleep(time.Second * 5)
+	// Sleep for a random duration between 30 to 60 seconds
+	sleepDuration := time.Duration(30+c.rng.IntN(31)) * time.Second
+	log.Sugar().Infof("sleeping for %v seconds as leader for topic %s", sleepDuration.Seconds(), topic)
+	time.Sleep(sleepDuration)
 
 	// Resigning from the election
 	log.Sugar().Infof("resigning from leadership for topic %s", topic)

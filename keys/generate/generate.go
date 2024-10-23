@@ -1,6 +1,7 @@
 package generate
 
 import (
+	topics "etcd-tester/topics/generate"
 	"os"
 	"strings"
 
@@ -14,12 +15,13 @@ func GenerateKeys(numKeys int, filename string) error {
 	}
 	defer file.Close()
 
-	keys := make([]string, numKeys)
+	var sb strings.Builder
 	for i := 0; i < numKeys; i++ {
-		keys[i] = uuid.New().String()
+		sb.WriteString(uuid.New().String())
+		sb.WriteString(topics.Delimiter)
 	}
 
-	_, err = file.WriteString(strings.Join(keys, ","))
+	_, err = file.WriteString(sb.String())
 	if err != nil {
 		return err
 	}
