@@ -7,6 +7,7 @@ import (
 	topics "etcd-tester/topics/generate"
 	"etcd-tester/utils"
 	"flag"
+	"fmt"
 	"os"
 	"strings"
 )
@@ -22,18 +23,28 @@ func main() {
 	// Reading topics from topics/topics.txt
 	data := string(utils.FatalAnyErr(os.ReadFile(topics.Topics)).([]byte))
 	allTopics := strings.Split(data, topics.Delimiter)
-	// The last topic is empty since it ends with ,
-	numTopicsPerClient := (len(allTopics) - 1) / *numClients
-	start := 0
-	logger.Sugar().Infof("Total no of topics - %d", len(allTopics)-1)
-	logger.Sugar().Infof("Generating %d clients, with %d topic per client", *numClients, numTopicsPerClient)
+	// Remove the last empty topic
+	allTopics = allTopics[:len(allTopics)-1]
+
+	totalTopics := len(allTopics)
+	numTopicsPerClient := totalTopics / *numClients
+	remainingTopics := totalTopics % *numClients
+
+	logger.Sugar().Infof("Total no of topics - %d", totalTopics)
+	logger.Sugar().Infof("Generating %d clients, with %d-%d topics per client", *numClients, numTopicsPerClient, numTopicsPerClient+1)
 
 	var clients []client.Client
+	start := 0
 	for i := 0; i < *numClients; i++ {
-		client := client.NewClient(ctx, *clientName, allTopics[start:start+numTopicsPerClient], []string{"localhost:2379"})
+		end := start + numTopicsPerClient
+		if remainingTopics > 0 {
+			end++
+			remainingTopics--
+		}
+		client := client.NewClient(ctx, fmt.Sprintf("%s-%d", *clientName, i+1), allTopics[start:end], []string{"localhost:2379"})
 		utils.Fatal(client.Start())
 		clients = append(clients, client)
-		start += numTopicsPerClient
+		start = end
 	}
 	logger.Info("Completed launching all the clients!!")
 

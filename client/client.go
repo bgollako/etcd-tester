@@ -104,7 +104,7 @@ func (c *client) contest(topic string) {
 
 	// Campaigning for a new election
 	election := concurrency.NewElection(session, topic)
-	log.Sugar().Infoln("contesting election for topic %s", topic)
+	log.Sugar().Infof("contesting election for topic %s", topic)
 	// Blocks till it wins the election
 	err = election.Campaign(c.ctx, uuid.NewString())
 	if err != nil {
@@ -112,11 +112,11 @@ func (c *client) contest(topic string) {
 		return
 	}
 	// Yay!! we won the election
-	log.Sugar().Infoln("won election for topic %s", topic)
+	log.Sugar().Infof("won election for topic %s", topic)
 	time.Sleep(time.Second * 5)
 
 	// Resigning from the election
-	log.Sugar().Infoln("resigning from leadership for topic %s", topic)
+	log.Sugar().Infof("resigning from leadership for topic %s", topic)
 	err = election.Resign(c.ctx)
 	if err != nil {
 		log.Error("error while creating campaigning for election", zap.Error(err))
