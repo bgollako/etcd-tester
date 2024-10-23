@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.0
+    command:
+      - etcd
+      - --advertise-client-urls=http://etcd:2379
+      - --listen-client-urls=http://0.0.0.0:2379
+      - --listen-metrics-urls=http://0.0.0.0:2381
+    ports:
+      - "2379:2379"
+      - "2381:2381"
+    volumes:
+      - etcd_data:/etcd-data
+
+  prometheus:
+    image: prom/prometheus:v2.30.3
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    ports:
+      - "9090:9090"
+    depends_on:
+      - etcd
+
+  grafana:
+    image: grafana/grafana:8.2.2
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+
+  etcd-tester1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - etcd
+
+  etcd-tester2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - etcd
+
+volumes:
+  etcd_data:
+  prometheus_data:
+  grafana_data:
+
+# Volumes are needed for data persistence:
+# - etcd_data: Stores etcd's data, ensuring cluster state is preserved across restarts.
+# - prometheus_data: Stores Prometheus' time-series data, allowing for long-term metrics storage.
+# - grafana_data: Stores Grafana's dashboards, users, and other configurations.
+# This ensures that data and configurations persist even if containers are stopped or removed.

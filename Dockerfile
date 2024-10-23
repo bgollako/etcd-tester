@@ -23,7 +23,7 @@ FROM alpine:latest
 WORKDIR /root/
 
 # Copy the binary from the builder stage
-COPY --from=builder /app/etcd-tester .
+COPY --from=builder /app/. .
 
 # Use ENTRYPOINT to specify the executable
 ENTRYPOINT ["./etcd-tester"]

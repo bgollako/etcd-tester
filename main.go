@@ -14,7 +14,7 @@ import (
 
 func main() {
 	// Reading cmdline arguments
-	numClients := flag.Int("numClients", 1, "number of etcd clients")
+	numClients := flag.Int("numClients", 10, "number of etcd clients")
 	clientName := flag.String("clientName", "client-1", "name of client")
 	flag.Parse()
 
@@ -41,7 +41,7 @@ func main() {
 			end++
 			remainingTopics--
 		}
-		client := client.NewClient(ctx, fmt.Sprintf("%s-%d", *clientName, i+1), allTopics[start:end], []string{"localhost:2379"})
+		client := client.NewClient(ctx, fmt.Sprintf("%s-%d", *clientName, i+1), allTopics[start:end], []string{"etcd:2379"})
 		utils.Fatal(client.Start())
 		clients = append(clients, client)
 		start = end
