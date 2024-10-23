@@ -6,12 +6,6 @@ scrape_configs:
   - job_name: 'etcd'
     static_configs:
       - targets: ['etcd:2379']
-    metrics_path: '/metrics'
-    scheme: 'http'
-
-  - job_name: 'etcd-metrics'
-    static_configs:
       - targets: ['etcd:2381']
     metrics_path: '/metrics'
     scheme: 'http'
-
