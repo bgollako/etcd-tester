@@ -38,10 +38,13 @@ services:
     depends_on:
       - prometheus
   zookeeper:
-    image: confluentinc/cp-zookeeper:latest
+    image: bitnami/zookeeper:latest
+    mem_limit: 4g
+    mem_reservation: 2g    
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+      ALLOW_ANONYMOUS_LOGIN: "yes"
     ports:
       - "2181:2181"
     volumes:
@@ -68,9 +71,3 @@ volumes:
   grafana_data:
   zookeeper_data:
   zookeeper_log:
-
-# Volumes are needed for data persistence:
-# - etcd_data: Stores etcd's data, ensuring cluster state is preserved across restarts.
-# - prometheus_data: Stores Prometheus' time-series data, allowing for long-term metrics storage.
-# - grafana_data: Stores Grafana's dashboards, users, and other configurations.
-# This ensures that data and configurations persist even if containers are stopped or removed.

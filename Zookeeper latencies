@@ -1,0 +1,15 @@
+Total write latency: 1418425710 ns
+Average write latency: 1418425.71 ns
+50th percentile write latency: 1224375 ns
+90th percentile write latency: 1921083 ns
+99.99th percentile write latency: 77310708 ns
+Total read latency: 765304991 ns
+Average read latency: 765304.991 ns
+50th percentile read latency: 722375 ns
+90th percentile read latency: 971250 ns
+99.99th percentile read latency: 12151917 ns
+Total delete latency: 975559704 ns
+Average delete latency: 975559.704 ns
+50th percentile delete latency: 889000 ns
+90th percentile delete latency: 1365208 ns
+99.99th percentile delete latency: 8526917 ns
