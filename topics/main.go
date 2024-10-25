@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	num := flag.Int("count", 100, "no of topics to generate")
+	num := flag.Int("count", 50000, "no of topics to generate")
 	flag.Parse()
 
 	topics.GenerateTopics(*num, topics.Prefix, topics.TopicsFile)

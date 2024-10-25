@@ -14,7 +14,7 @@ import (
 
 func main() {
 	// Reading cmdline arguments
-	numClients := flag.Int("numClients", 10, "number of etcd clients")
+	numClients := flag.Int("numClients", 30, "number of etcd clients")
 	clientName := flag.String("clientName", "client-1", "name of client")
 	flag.Parse()
 
