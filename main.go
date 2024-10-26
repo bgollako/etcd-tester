@@ -63,7 +63,7 @@ func main2() {
 }
 
 func main() {
-	generateLatencyStats(1000)
+	generateLatencyStats(10000)
 }
 
 func generateLatencyStats(numKeys int) {
